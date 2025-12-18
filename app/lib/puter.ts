@@ -327,30 +327,28 @@ export const usePuterStore = create<PuterStore>((set, get) => {
     >;
   };
 
-  const feedback = async (path: string, message: string) => {
+  const feedback = async (path: string, message: string, model?: string) => {
     const puter = getPuter();
     if (!puter) {
       setError("Puter.js not available");
       return;
     }
 
+    const chosenModel = model || "GPT-3.5-turbo";
+
     return puter.ai.chat(
       [
         {
           role: "user",
           content: [
-            {
-              type: "file",
-              puter_path: path,
-            },
-            {
-              type: "text",
-              text: message,
-            },
+            { type: "file", puter_path: path },
+            { type: "text", text: message },
           ],
         },
       ],
-      { model: "claude-sonnet-4" }
+      undefined,
+      false,
+      { model: chosenModel }
     ) as Promise<AIResponse | undefined>;
   };
 
